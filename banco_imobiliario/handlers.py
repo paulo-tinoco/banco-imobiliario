@@ -6,6 +6,7 @@ from .models import Jogador, Perfil, Propriedade
 class JogoHandler:
     propriedades: list[Propriedade] = []
     jogadores: list[Jogador] = []
+    proximo_jogador = 0
     simulacoes = 300
     timeout = 1000
 
@@ -99,10 +100,17 @@ class JogoHandler:
     def jogar_dado(self):  # pragma: no cover
         return random.randint(1, 6)
 
+    def selecionar_jogador_da_vez(self):
+        if self.proximo_jogador >= len(self.jogadores):
+            self.proximo_jogador = 0
+
+        jogador = self.jogadores[self.proximo_jogador]
+        self.proximo_jogador += 1
+        return jogador
+
     def jogar(self, simulacao: int = 1) -> None:  # pragma: no cover
-        print(f"Inicio rodada {simulacao}")
         for rodada in range(1, self.timeout + 1):
-            jogador = random.choice(self.jogadores)
+            jogador = self.selecionar_jogador_da_vez()
             if jogador.falido:
                 continue
             dado = self.jogar_dado()
@@ -118,5 +126,4 @@ class JogoHandler:
             self.verificar_falencia(jogador)
             if self.verificar_fim_de_jogo():
                 break
-        print(f"Fim rodada {simulacao}\n\n")
         return (self.verificar_vencedor(), self.lista_perdedores(), rodada)

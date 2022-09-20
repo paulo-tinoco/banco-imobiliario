@@ -14,6 +14,7 @@ vitoria_perfis = {
 timeout = 0
 total_rodadas = 0
 perfil_que_mais_venceu = None
+empates = 0
 for simulacao in range(jogo.simulacoes):
     # Cria propriedades
     for i in range(20):
@@ -27,11 +28,13 @@ for simulacao in range(jogo.simulacoes):
     jogo.add_propriedades_no_jogo()
 
     # inicia o jogo
-    vencedor, perdedor, rodadas = jogo.jogar(simulacao)
+    vencedor, perdedor, rodadas = jogo.jogar(simulacao + 1)
 
     # verifica quem venceu
     if vencedor:
         vitoria_perfis[vencedor.perfil.name] += 1
+    else:
+        empates += 1
 
     total_rodadas += rodadas
 
@@ -41,6 +44,7 @@ for simulacao in range(jogo.simulacoes):
 
 print(f"O perfil que mais venceu foi {max(vitoria_perfis, key=vitoria_perfis.get)}")
 print(f"O timeout ocorreu {timeout} vezes")
-print(f"A média de rodadas foi {round(total_rodadas / jogo.simulacoes)}")
+print(f"As partidas tiveram uma média de {round(total_rodadas / jogo.simulacoes)} rodadas")
+print(f"O total de partidas empatadas foi {empates / jogo.simulacoes * 100:.2f}%")
 for perfil, vitorias in vitoria_perfis.items():
     print(f"O perfil {perfil} venceu {vitorias / jogo.simulacoes * 100:.2f}%")
